@@ -13,7 +13,7 @@ public abstract class Method {
 
     private final Function<Double, Double> function;
 
-    private int iterations = 0;
+    protected int iterations = 0;
     private int functionComputations = 0;
 
     public Method(Function<Double, Double> function, double left, double right, double eps) {

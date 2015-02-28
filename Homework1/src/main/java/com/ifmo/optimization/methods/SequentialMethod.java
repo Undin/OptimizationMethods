@@ -9,22 +9,27 @@ import java.util.function.Function;
  */
 public abstract class SequentialMethod extends Method {
 
-    private int steps = 0;
     private final List<Double> leftPoints = new ArrayList<>();
     private final List<Double> rightPoints = new ArrayList<>();
 
-
     public SequentialMethod(Function<Double, Double> function, double left, double right, double eps) {
         super(function, left, right, eps);
+        leftPoints.add(left);
+        rightPoints.add(right);
     }
 
     protected void step(double l, double r) {
-        steps++;
+        iterations++;
         leftPoints.add(l);
         rightPoints.add(r);
     }
 
-    public int getSteps() {
-        return steps;
+    public double getLeft(int i) {
+        return leftPoints.get(i);
     }
+
+    public double getRight(int i) {
+        return rightPoints.get(i);
+    }
+
 }

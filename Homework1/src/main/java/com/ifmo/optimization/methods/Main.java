@@ -16,7 +16,7 @@ public class Main {
         {
             SequentialMethod method = new FibonacciMethod(FUNCTION, LEFT, RIGHT, EPS);
             double res = method.findMinimum();
-            int steps = method.getSteps();
+            int steps = method.getIterations();
             System.out.println(res);
             System.out.println(Math.abs(1.5 - res) / EPS);
             System.out.println(steps);
@@ -25,7 +25,7 @@ public class Main {
         {
             SequentialMethod method = new GoldenSectionMethod(FUNCTION, LEFT, RIGHT, EPS);
             double res = method.findMinimum();
-            int steps = method.getSteps();
+            int steps = method.getIterations();
             System.out.println(res);
             System.out.println(Math.abs(1.5 - res) / EPS);
             System.out.println(steps);
@@ -35,7 +35,7 @@ public class Main {
         {
             SequentialMethod method = new Dichotomy(FUNCTION, LEFT, RIGHT, EPS);
             double res = method.findMinimum();
-            int steps = method.getSteps();
+            int steps = method.getIterations();
             System.out.println(res);
             System.out.println(Math.abs(1.5 - res) / EPS);
             System.out.println(steps);
