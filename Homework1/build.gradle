@@ -1,7 +1,23 @@
 apply plugin: 'java'
+apply from: 'http://dl.bintray.com/content/shemnon/javafx-gradle/0.4.0/javafx.plugin'
 
 repositories {
     mavenCentral()
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDirs = ["src/main/java"]
+            includes = ["**/*.fxml"]
+        }
+    }
+}
+
+javafx {
+    appID 'OptimizationMethods'
+    appName 'Optimization Methods'
+    mainClass 'com.ifmo.optimization.methods.visualization.Window'
 }
 
 dependencies {
