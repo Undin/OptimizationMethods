@@ -72,17 +72,17 @@ public class Controller implements Initializable {
         changeValues();
     }
 
-    private Method getCurrentMethod() {
-        switch (methodSelector.getValue()) {
-            case "Dichotomy":
+    private Method getCurrentMethod(int index) {
+        switch (index) {
+            case 0:
                 return new Dichotomy(FUNCTION, leftValue, rightValue, epsValue);
-            case "Fibonacci":
+            case 1:
                 return new FibonacciMethod(FUNCTION, leftValue, rightValue, epsValue);
-            case "Golden Section":
+            case 2:
                 return new GoldenSectionMethod(FUNCTION, leftValue, rightValue, epsValue);
-//            case "Sequential Search":
+//            case 3:
 //                return new Search(FUNCTION, leftValue, rightValue, epsValue);
-//            case "Polygonal Search":
+//            case 4":
 //                return new Dichotomy(FUNCTION, leftValue, rightValue, epsValue);
         }
         return null;
@@ -93,7 +93,7 @@ public class Controller implements Initializable {
             epsValue = Double.parseDouble(eps.getText());
             leftValue = Double.parseDouble(left.getText());
             rightValue = Double.parseDouble(right.getText());
-            new MethodExecutor(getCurrentMethod()).run();
+            new MethodExecutor(getCurrentMethod(methodSelector.getSelectionModel().getSelectedIndex())).run();
             buildPlot(plotSelector.getSelectionModel().getSelectedIndex());
         } catch (Exception ignored) {
         }
@@ -194,7 +194,7 @@ public class Controller implements Initializable {
     private class MethodSelectorChanger implements ChangeListener<Number> {
         @Override
         public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-            new MethodExecutor(getCurrentMethod()).run();
+            new MethodExecutor(getCurrentMethod((int) newValue)).run();
         }
     }
 
