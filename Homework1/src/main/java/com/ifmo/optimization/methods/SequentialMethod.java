@@ -19,7 +19,7 @@ public abstract class SequentialMethod extends Method {
     }
 
     protected void step(double l, double r) {
-        iterations++;
+        iteration();
         leftPoints.add(l);
         rightPoints.add(r);
     }

@@ -13,7 +13,7 @@ public abstract class Method {
 
     private final Function<Double, Double> function;
 
-    protected int iterations = 0;
+    private int iterations = 0;
     private int functionComputations = 0;
 
     public Method(Function<Double, Double> function, double left, double right, double eps) {
@@ -34,6 +34,10 @@ public abstract class Method {
     protected double calculateFunction(double arg) {
         functionComputations++;
         return function.apply(arg);
+    }
+
+    protected void iteration() {
+        iterations++;
     }
 
     public abstract double findMinimum();
