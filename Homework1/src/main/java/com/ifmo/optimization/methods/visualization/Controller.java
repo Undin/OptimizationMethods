@@ -71,6 +71,8 @@ public class Controller implements Initializable {
         methodSelector.setItems(FXCollections.observableArrayList(METHODS_NAME));
         plotSelector.setItems(FXCollections.observableArrayList(PLOT_NAME));
         TableRow.setConfig(table);
+        nlLabel.setVisible(false);
+        nl.setVisible(false);
         function.setText(FUNCTION_TEXT);
         methodSelector.getSelectionModel().selectedIndexProperty().addListener(new MethodSelectorChanger());
         plotSelector.getSelectionModel().selectedIndexProperty().addListener(new PlotSelectorChanger());
@@ -121,9 +123,11 @@ public class Controller implements Initializable {
     private void buildPlot(int position) {
         switch (position) {
             case 0:
+                methodSelector.getSelectionModel().select(0);
                 new SeqPlotBuilder(leftValue, rightValue).run();
                 break;
             case 1:
+                methodSelector.getSelectionModel().select(4);
                 new BrokenLinePlotBuilder(leftValue, rightValue, epsValue, nlValue).run();
                 break;
         }
@@ -230,12 +234,15 @@ public class Controller implements Initializable {
             nl.setVisible(true);
             switch ((int) newValue) {
                 case 3:
+                    setPlots(plot);
                     nlLabel.setText("N = ");
                     break;
                 case 4:
+                    plotSelector.getSelectionModel().select(1);
                     nlLabel.setText("L = ");
                     break;
                 default:
+                    plotSelector.getSelectionModel().select(0);
                     nlLabel.setVisible(false);
                     nl.setVisible(false);
             }
