@@ -80,7 +80,7 @@
                         </Label>
                         <TextField id="showEps" fx:id="eps" alignment="CENTER" maxHeight="30.0" maxWidth="80.0"
                                    minHeight="30.0" minWidth="80.0" prefColumnCount="12" prefHeight="30.0"
-                                   prefWidth="80.0" text="0.000001">
+                                   prefWidth="80.0" text="0.0001">
                             <HBox.margin>
                                 <Insets right="20.0"/>
                             </HBox.margin>

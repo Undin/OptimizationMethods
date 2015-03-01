@@ -68,6 +68,7 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        plot.setCreateSymbols(false);
         methodSelector.setItems(FXCollections.observableArrayList(METHODS_NAME));
         plotSelector.setItems(FXCollections.observableArrayList(PLOT_NAME));
         TableRow.setConfig(table);
@@ -106,7 +107,9 @@ public class Controller implements Initializable {
             rightValue = Double.parseDouble(right.getText());
             nlValue = Double.parseDouble(nl.getText());
             new MethodExecutor(getCurrentMethod(methodSelector.getSelectionModel().getSelectedIndex())).run();
-            buildPlot(plotSelector.getSelectionModel().getSelectedIndex());
+            if (methodSelector.getSelectionModel().getSelectedIndex() != 3) {
+                buildPlot(plotSelector.getSelectionModel().getSelectedIndex());
+            }
         } catch (Exception ignored) {
         }
     }
@@ -123,7 +126,9 @@ public class Controller implements Initializable {
     private void buildPlot(int position) {
         switch (position) {
             case 0:
-                methodSelector.getSelectionModel().select(0);
+                if (methodSelector.getSelectionModel().getSelectedIndex() > 2) {
+                    methodSelector.getSelectionModel().select(0);
+                }
                 new SeqPlotBuilder(leftValue, rightValue).run();
                 break;
             case 1:
