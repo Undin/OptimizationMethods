@@ -9,16 +9,18 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
 <GridPane alignment="TOP_LEFT" hgap="10.0" maxHeight="700.0" maxWidth="600.0" minHeight="700.0" minWidth="600.0" prefHeight="700.0" prefWidth="600.0" vgap="10.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.ifmo.optimization.methods.homework2.Controller">
   <children>
-    <Pane fx:id="plot" maxHeight="600.0" maxWidth="600.0" minHeight="600.0" minWidth="600.0" prefHeight="600.0" prefWidth="600.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+    <ImageView fx:id="plot" fitHeight="600.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="0" GridPane.rowIndex="0">
       <GridPane.margin>
-        <Insets top="-100.0" />
+        <Insets top="-100.0" fx:id="x3" />
       </GridPane.margin>
-    </Pane>
+    </ImageView>
+    <Pane fx:id="linePlot" maxHeight="600.0" maxWidth="600.0" minHeight="600.0" minWidth="600.0" prefHeight="600.0" prefWidth="600.0" GridPane.columnIndex="0" GridPane.margin="$x3" GridPane.rowIndex="0" />
     <VBox maxHeight="100.0" maxWidth="600.0" minHeight="100.0" minWidth="600.0" prefHeight="100.0" prefWidth="600.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
       <children>
         <HBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
@@ -49,7 +51,11 @@
               </HBox.margin>
             </Label>
             <TextField id="x0" fx:id="yl" alignment="CENTER" prefWidth="70.0" text="0" />
-            <Label font="$x1" text="yr = " HBox.margin="$x2" />
+            <Label font="$x1" text="yr = ">
+              <HBox.margin>
+                <Insets left="20.0" fx:id="x2" />
+              </HBox.margin>
+            </Label>
             <TextField id="x0" fx:id="yr" alignment="CENTER" prefWidth="70.0" text="1" />
           </children>
         </HBox>
@@ -78,8 +84,6 @@
                 <Insets left="20.0" right="20.0" />
               </HBox.margin>
             </Button>
-            <Label font="$x1" text="SCALE: " />
-            <TextField id="x0" fx:id="scale" alignment="CENTER" prefWidth="50.0" text="5" />
           </children>
         </HBox>
       </children>
