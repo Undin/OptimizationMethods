@@ -4,6 +4,7 @@ import com.ifmo.optimization.methods.Dichotomy;
 import com.ifmo.optimization.methods.FibonacciMethod;
 import com.ifmo.optimization.methods.GoldenSectionMethod;
 import com.ifmo.optimization.methods.Method;
+import com.ifmo.optimization.methods.SearchMethod;
 import com.ifmo.optimization.methods.SequentialMethod;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -42,6 +43,8 @@ public class Controller implements Initializable {
     @FXML
     private TextField right;
     @FXML
+    private TextField n;
+    @FXML
     private Label iter;
     @FXML
     private Label numbComp;
@@ -57,6 +60,7 @@ public class Controller implements Initializable {
     private double epsValue;
     private double leftValue;
     private double rightValue;
+    private int nValue;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -64,11 +68,13 @@ public class Controller implements Initializable {
         plotSelector.setItems(FXCollections.observableArrayList(PLOT_NAME));
         TableRow.setConfig(table);
         function.setText(FUNCTION_TEXT);
+        n.setDisable(true);
         methodSelector.getSelectionModel().selectedIndexProperty().addListener(new MethodSelectorChanger());
         plotSelector.getSelectionModel().selectedIndexProperty().addListener(new PlotSelectorChanger());
         eps.textProperty().addListener((observable, oldValue, newValue) -> changeValues());
         left.textProperty().addListener((observable, oldValue, newValue) -> changeValues());
         right.textProperty().addListener((observable, oldValue, newValue) -> changeValues());
+        n.textProperty().addListener((observable, oldValue, newValue) -> changeValues());
         changeValues();
     }
 
@@ -80,8 +86,8 @@ public class Controller implements Initializable {
                 return new FibonacciMethod(FUNCTION, leftValue, rightValue, epsValue);
             case 2:
                 return new GoldenSectionMethod(FUNCTION, leftValue, rightValue, epsValue);
-//            case 3:
-//                return new Search(FUNCTION, leftValue, rightValue, epsValue);
+            case 3:
+                return new SearchMethod(FUNCTION, leftValue, rightValue, epsValue, nValue);
 //            case 4":
 //                return new Dichotomy(FUNCTION, leftValue, rightValue, epsValue);
         }
@@ -93,6 +99,7 @@ public class Controller implements Initializable {
             epsValue = Double.parseDouble(eps.getText());
             leftValue = Double.parseDouble(left.getText());
             rightValue = Double.parseDouble(right.getText());
+            nValue = Integer.parseInt(n.getText());
             new MethodExecutor(getCurrentMethod(methodSelector.getSelectionModel().getSelectedIndex())).run();
             buildPlot(plotSelector.getSelectionModel().getSelectedIndex());
         } catch (Exception ignored) {
@@ -194,6 +201,7 @@ public class Controller implements Initializable {
     private class MethodSelectorChanger implements ChangeListener<Number> {
         @Override
         public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+            n.setDisable(!newValue.equals(3));
             new MethodExecutor(getCurrentMethod((int) newValue)).run();
         }
     }
