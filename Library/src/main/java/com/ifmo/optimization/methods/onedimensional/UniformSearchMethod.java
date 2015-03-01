@@ -1,4 +1,4 @@
-package com.ifmo.optimization.methods;
+package com.ifmo.optimization.methods.onedimensional;
 
 import java.util.function.Function;
 

@@ -1,4 +1,4 @@
-package com.ifmo.optimization.methods.visualization;
+package com.ifmo.optimization.methods.homework1;
 
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;

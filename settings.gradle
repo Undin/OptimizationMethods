@@ -1,4 +1,6 @@
 rootProject.name = 'OptimizationMethods'
 
+include 'Library'
 include 'Homework1'
+include 'Homework2'
 

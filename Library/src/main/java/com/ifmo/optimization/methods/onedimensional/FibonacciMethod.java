@@ -1,16 +1,27 @@
-package com.ifmo.optimization.methods;
+package com.ifmo.optimization.methods.onedimensional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 /**
  * Created by warrior on 27.02.15.
  */
-public class GoldenSectionMethod extends SequentialMethod {
+public class FibonacciMethod extends SequentialMethod {
 
-    public static final double PHI = (Math.sqrt(5) - 1) / 2;
+    private final double length;
+    private final List<Double> fibonacciRow = new ArrayList<>();
 
-    public GoldenSectionMethod(Function<Double, Double> function, double left, double right, double eps) {
+    public FibonacciMethod(Function<Double, Double> function, double left, double right, double eps) {
         super(function, left, right, eps);
+        length = right - left;
+        fibonacciRow.add(1D);
+        fibonacciRow.add(1D);
+        int size = 2;
+        while (length / fibonacciRow.get(size - 1) > eps) {
+            fibonacciRow.add(fibonacciRow.get(size - 1) + fibonacciRow.get(size - 2));
+            size++;
+        }
     }
 
     @Override
@@ -25,15 +36,16 @@ public class GoldenSectionMethod extends SequentialMethod {
         boolean leftCalculated = false;
         boolean rightCalculated = false;
 
-        while (r - l > eps) {
-            double delta = PHI * (r - l);
+        int n = fibonacciRow.size() - 2;
+
+        for (int k = 1; k < n; k++) {
             if (!leftCalculated) {
-                x1 = r - delta;
+                x1 = l + length * fibonacciRow.get(n - k) / fibonacciRow.get(n + 1);
                 fx1 = calculateFunction(x1);
                 leftCalculated = true;
             }
             if (!rightCalculated) {
-                x2 = l + delta;
+                x2 = l + length * fibonacciRow.get(n + 1 - k) / fibonacciRow.get(n + 1);
                 fx2 = calculateFunction(x2);
                 rightCalculated = true;
             }
@@ -50,6 +62,8 @@ public class GoldenSectionMethod extends SequentialMethod {
             }
             step(l, r);
         }
+
         return (l + r) / 2;
     }
+
 }

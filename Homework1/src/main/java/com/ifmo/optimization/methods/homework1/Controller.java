@@ -1,12 +1,6 @@
-package com.ifmo.optimization.methods.visualization;
+package com.ifmo.optimization.methods.homework1;
 
-import com.ifmo.optimization.methods.BrokenLineMethod;
-import com.ifmo.optimization.methods.Dichotomy;
-import com.ifmo.optimization.methods.FibonacciMethod;
-import com.ifmo.optimization.methods.GoldenSectionMethod;
-import com.ifmo.optimization.methods.Method;
-import com.ifmo.optimization.methods.SequentialMethod;
-import com.ifmo.optimization.methods.UniformSearchMethod;
+import com.ifmo.optimization.methods.onedimensional.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
