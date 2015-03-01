@@ -1,11 +1,12 @@
 package com.ifmo.optimization.methods.visualization;
 
+import com.ifmo.optimization.methods.BrokenLineMethod;
 import com.ifmo.optimization.methods.Dichotomy;
 import com.ifmo.optimization.methods.FibonacciMethod;
 import com.ifmo.optimization.methods.GoldenSectionMethod;
 import com.ifmo.optimization.methods.Method;
-import com.ifmo.optimization.methods.UniformSearchMethod;
 import com.ifmo.optimization.methods.SequentialMethod;
+import com.ifmo.optimization.methods.UniformSearchMethod;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -24,11 +25,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Controller implements Initializable {
 
-    private static final String[] METHODS_NAME = {"Dichotomy", "Fibonacci", "Golden Section", "Uniform Sequential Search", "Polygonal Search"};
-    private static final String[] PLOT_NAME = {"Sequential", "third"};
+    private static final String[] METHODS_NAME = {"Dichotomy", "Fibonacci", "Golden Section", "Uniform Sequential Search", "Broken Line Search"};
+    private static final String[] PLOT_NAME = {"Sequential", "Broken Line"};
     private static final Function<Double, Double> FUNCTION = x -> x * x - 3 * x + 2;
     private static final String FUNCTION_TEXT = "f(x) = x * x - 3 * x + 2";
 
@@ -43,7 +45,9 @@ public class Controller implements Initializable {
     @FXML
     private TextField right;
     @FXML
-    private TextField n;
+    private TextField nl;
+    @FXML
+    private Label nlLabel;
     @FXML
     private Label iter;
     @FXML
@@ -60,7 +64,7 @@ public class Controller implements Initializable {
     private double epsValue;
     private double leftValue;
     private double rightValue;
-    private int nValue;
+    private double nlValue;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -68,13 +72,12 @@ public class Controller implements Initializable {
         plotSelector.setItems(FXCollections.observableArrayList(PLOT_NAME));
         TableRow.setConfig(table);
         function.setText(FUNCTION_TEXT);
-        n.setDisable(true);
         methodSelector.getSelectionModel().selectedIndexProperty().addListener(new MethodSelectorChanger());
         plotSelector.getSelectionModel().selectedIndexProperty().addListener(new PlotSelectorChanger());
         eps.textProperty().addListener((observable, oldValue, newValue) -> changeValues());
         left.textProperty().addListener((observable, oldValue, newValue) -> changeValues());
         right.textProperty().addListener((observable, oldValue, newValue) -> changeValues());
-        n.textProperty().addListener((observable, oldValue, newValue) -> changeValues());
+        nl.textProperty().addListener((observable, oldValue, newValue) -> changeValues());
         changeValues();
     }
 
@@ -87,9 +90,9 @@ public class Controller implements Initializable {
             case 2:
                 return new GoldenSectionMethod(FUNCTION, leftValue, rightValue, epsValue);
             case 3:
-                return new UniformSearchMethod(FUNCTION, leftValue, rightValue, epsValue, nValue);
-//            case 4":
-//                return new Dichotomy(FUNCTION, leftValue, rightValue, epsValue);
+                return new UniformSearchMethod(FUNCTION, leftValue, rightValue, epsValue, (int) nlValue);
+            case 4:
+                return new BrokenLineMethod(FUNCTION, nlValue, leftValue, rightValue, epsValue);
         }
         return null;
     }
@@ -99,7 +102,7 @@ public class Controller implements Initializable {
             epsValue = Double.parseDouble(eps.getText());
             leftValue = Double.parseDouble(left.getText());
             rightValue = Double.parseDouble(right.getText());
-            nValue = Integer.parseInt(n.getText());
+            nlValue = Double.parseDouble(nl.getText());
             new MethodExecutor(getCurrentMethod(methodSelector.getSelectionModel().getSelectedIndex())).run();
             buildPlot(plotSelector.getSelectionModel().getSelectedIndex());
         } catch (Exception ignored) {
@@ -121,7 +124,7 @@ public class Controller implements Initializable {
                 new SeqPlotBuilder(leftValue, rightValue).run();
                 break;
             case 1:
-                //TODO build new plot!
+                new BrokenLinePlotBuilder(leftValue, rightValue, epsValue, nlValue).run();
                 break;
         }
     }
@@ -141,8 +144,30 @@ public class Controller implements Initializable {
         plot.setData(lineChartData);
     }
 
-    private class SeqPlotBuilder implements Runnable {
+    private class BrokenLinePlotBuilder implements Runnable {
+        private final double left;
+        private final double right;
+        private final double eps;
+        private final double l;
 
+        public BrokenLinePlotBuilder(double left, double right, double eps, double l) {
+            this.left = left;
+            this.right = right;
+            this.eps = eps;
+            this.l = l;
+        }
+
+        @Override
+        public void run() {
+            BrokenLineMethod method = new BrokenLineMethod(FUNCTION, l, left, right, eps);
+            method.findMinimum();
+            List<Double> f = method.getXList().stream().map(FUNCTION::apply).collect(Collectors.toList());
+            setPlots(plot, getSeries("Graphic", method.getXList(), f),
+                    getSeries("Broken line", method.getXList(), method.getYList()));
+        }
+    }
+
+    private class SeqPlotBuilder implements Runnable {
         private final double left;
         private final double right;
 
@@ -201,7 +226,19 @@ public class Controller implements Initializable {
     private class MethodSelectorChanger implements ChangeListener<Number> {
         @Override
         public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-            n.setDisable(!newValue.equals(3));
+            nlLabel.setVisible(true);
+            nl.setVisible(true);
+            switch ((int) newValue) {
+                case 3:
+                    nlLabel.setText("N = ");
+                    break;
+                case 4:
+                    nlLabel.setText("L = ");
+                    break;
+                default:
+                    nlLabel.setVisible(false);
+                    nl.setVisible(false);
+            }
             new MethodExecutor(getCurrentMethod((int) newValue)).run();
         }
     }
