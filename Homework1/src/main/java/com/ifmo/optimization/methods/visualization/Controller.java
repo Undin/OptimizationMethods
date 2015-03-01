@@ -4,7 +4,7 @@ import com.ifmo.optimization.methods.Dichotomy;
 import com.ifmo.optimization.methods.FibonacciMethod;
 import com.ifmo.optimization.methods.GoldenSectionMethod;
 import com.ifmo.optimization.methods.Method;
-import com.ifmo.optimization.methods.SearchMethod;
+import com.ifmo.optimization.methods.UniformSearchMethod;
 import com.ifmo.optimization.methods.SequentialMethod;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -27,7 +27,7 @@ import java.util.function.Function;
 
 public class Controller implements Initializable {
 
-    private static final String[] METHODS_NAME = {"Dichotomy", "Fibonacci", "Golden Section", "Sequential Search", "Polygonal Search"};
+    private static final String[] METHODS_NAME = {"Dichotomy", "Fibonacci", "Golden Section", "Uniform Sequential Search", "Polygonal Search"};
     private static final String[] PLOT_NAME = {"Sequential", "third"};
     private static final Function<Double, Double> FUNCTION = x -> x * x - 3 * x + 2;
     private static final String FUNCTION_TEXT = "f(x) = x * x - 3 * x + 2";
@@ -87,7 +87,7 @@ public class Controller implements Initializable {
             case 2:
                 return new GoldenSectionMethod(FUNCTION, leftValue, rightValue, epsValue);
             case 3:
-                return new SearchMethod(FUNCTION, leftValue, rightValue, epsValue, nValue);
+                return new UniformSearchMethod(FUNCTION, leftValue, rightValue, epsValue, nValue);
 //            case 4":
 //                return new Dichotomy(FUNCTION, leftValue, rightValue, epsValue);
         }
