@@ -45,7 +45,7 @@ public class BrokenLineMethod extends Method {
                 double newNextY = -l * newNextX + newNextB;
                 x.add(currentIndex + 1, newNextX);
                 y.add(currentIndex + 1, newNextY);
-                b.add(currentIndex + 1, newNextB);
+                b.add(currentIndex, newNextB);
             }
 
             if (currentIndex > 0) {
