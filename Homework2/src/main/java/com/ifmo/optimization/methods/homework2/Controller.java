@@ -1,5 +1,6 @@
 package com.ifmo.optimization.methods.homework2;
 
+import com.ifmo.optimization.methods.multidimensional.Point;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -14,17 +15,16 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * Created by Whiplash on 01.03.2015.
  */
 public class Controller implements Initializable {
 
-    private static final BiFunction<Double, Double, Double> FUNCTION = (x, y) -> Math.pow(x, 4) + Math.pow(y, 4) - 5 * (x * y - Math.pow(x * y, 2));
+    private static final Function<Point, Double> FUNCTION = (v) -> Math.pow(v.x, 4) + Math.pow(v.y, 4) - 5 * (v.x * v.y - Math.pow(v.x * v.y, 2));
 //    private static final Function<Double, Double, Double> FUNCTION = (x, y) -> x + y;
 
     @FXML
@@ -72,31 +72,24 @@ public class Controller implements Initializable {
 
     private void runMethod() {
         //TODO run method
-        List<Double> xs = new ArrayList<>();
-        xs.add(0.);
-        xs.add(.5);
-        xs.add(.75);
-        List<Double> ys = new ArrayList<>();
-        ys.add(0.);
-        ys.add(.5);
-        ys.add(0.);
-        buildFunctionGradient(plot, xlValue, xrValue, ylValue, yrValue, xs, ys);
+        buildFunctionGradient(plot, new Point(xlValue, ylValue), new Point(xrValue, yrValue), null);
     }
 
-    private void buildFunctionGradient(ImageView plot, double xl, double xr, double yl, double yr, List<Double> xs, List<Double> ys) {
+
+    private void buildFunctionGradient(ImageView plot, Point l, Point r, List<Point> v) {
         int prefWidth = 600;
         int prefHeight = 600;
-        int width = (int) (prefWidth * (xr - xl < yr - yl ? (xr - xl) / (yr - yl) : 1));
-        int height = (int) (prefHeight * (xr - xl > yr - yl ? (yr - yl) / (xr - xl) : 1));
-        double xStep = (xr - xl) / width;
-        double yStep = (yr - yl) / height;
+        int width = (int) (prefWidth * (r.x - l.x < r.y - l.y ? (r.x - l.x) / (r.y - l.y) : 1));
+        int height = (int) (prefHeight * (r.x - l.x > r.y - l.y ? (r.y - l.y) / (r.x - l.x) : 1));
+        double xStep = (r.x - l.x) / width;
+        double yStep = (r.y - l.y) / height;
         double[][] pixels = new double[height][width];
         double max = Double.MIN_VALUE;
         double min = Double.MAX_VALUE;
         for (int xi = 0; xi < prefWidth; xi++) {
             for (int yi = 0; yi < prefHeight; yi++) {
                 if (xi < width && yi < height) {
-                    pixels[yi][xi] = FUNCTION.apply(xl + xi * xStep, yl + yi * yStep);
+                    pixels[yi][xi] = FUNCTION.apply(new Point(l.x + xi * xStep, l.y + yi * yStep));
                     max = Math.max(pixels[yi][xi], max);
                     min = Math.min(pixels[yi][xi], min);
                 }
@@ -117,12 +110,11 @@ public class Controller implements Initializable {
         }
         plot.setImage(img);
         linePlot.getChildren().clear();
-        for (int i = 0; i < xs.size() - 1; i++) {
-            double sx = (xs.get(i) - xl) / xStep;
-            double sy = (ys.get(i) - yl) / yStep;
-            double ex = (xs.get(i + 1) - xl) / xStep;
-            double ey = (ys.get(i + 1) - yl) / yStep;
-//            Line line = new Line(sx, sy, ex, ey);
+        for (int i = 0; i < v.size() - 1; i++) {
+            double sx = (v.get(i).x - l.x) / xStep;
+            double sy = (v.get(i).y - l.y) / yStep;
+            double ex = (v.get(i + 1).x - l.x) / xStep;
+            double ey = (v.get(i + 1).y - l.y) / yStep;
             Line line = new Line(sx, height - sy, ex, height - ey);
             linePlot.getChildren().add(line);
         }
