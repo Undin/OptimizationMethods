@@ -15,16 +15,27 @@ public class Main {
     };
     private static final Point LEFT_BOTTOM = new Point(0, 0);
     private static final Point RIGHT_TOP = new Point(1, 1);
-    private static final Point START_POINT = new Point(0.01, 0.05);
-    private static final double EPS = 0.0001;
+    private static final Point START_POINT = new Point(0.2, 0.8);
+    private static final double EPS = 0.0000001;
 
     public static void main(String[] args) {
-        GradientDescent gradientDescent = new SimpleGradientDescent(FUNCTION, GRADIENT, LEFT_BOTTOM, RIGHT_TOP, START_POINT, EPS);
-        Point point = gradientDescent.findMinimum();
-        System.out.println(point);
-        System.out.println(FUNCTION.apply(START_POINT));
-        System.out.println(FUNCTION.apply(point));
-        System.out.println(gradientDescent.getFunctionComputations());
-        System.out.println(gradientDescent.getGradientComputations());
+        {
+            GradientDescent gradientDescent = new SimpleGradientDescent(FUNCTION, GRADIENT, LEFT_BOTTOM, RIGHT_TOP, START_POINT, EPS);
+            Point point = gradientDescent.findMinimum();
+            System.out.println(point);
+            System.out.println(FUNCTION.apply(START_POINT));
+            System.out.println(FUNCTION.apply(point));
+            System.out.println(gradientDescent.getFunctionComputations());
+            System.out.println(gradientDescent.getGradientComputations());
+        }
+        {
+            GradientDescent gradientDescent = new FastGradientDescent(FUNCTION, GRADIENT, LEFT_BOTTOM, RIGHT_TOP, START_POINT, EPS);
+            Point point = gradientDescent.findMinimum();
+            System.out.println(point);
+            System.out.println(FUNCTION.apply(START_POINT));
+            System.out.println(FUNCTION.apply(point));
+            System.out.println(gradientDescent.getFunctionComputations());
+            System.out.println(gradientDescent.getGradientComputations());
+        }
     }
 }
