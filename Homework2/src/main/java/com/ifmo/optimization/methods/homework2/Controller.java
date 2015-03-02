@@ -1,6 +1,9 @@
 package com.ifmo.optimization.methods.homework2;
 
+import com.ifmo.optimization.methods.multidimensional.FastGradientDescent;
+import com.ifmo.optimization.methods.multidimensional.GradientDescent;
 import com.ifmo.optimization.methods.multidimensional.Point;
+import com.ifmo.optimization.methods.multidimensional.SimpleGradientDescent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -25,7 +28,12 @@ import java.util.function.Function;
 public class Controller implements Initializable {
 
     private static final Function<Point, Double> FUNCTION = (v) -> Math.pow(v.x, 4) + Math.pow(v.y, 4) - 5 * (v.x * v.y - Math.pow(v.x * v.y, 2));
-//    private static final Function<Double, Double, Double> FUNCTION = (x, y) -> x + y;
+    private static final Function<Point, Point> GRADIENT = p -> {
+        double x = 4 * Math.pow(p.x, 3) - 5 * (p.y - 2 * p.x * Math.pow(p.y, 2));
+        double y = 4 * Math.pow(p.y, 3) - 5 * (p.x - 2 * p.y * Math.pow(p.x, 2));
+        return new Point(x, y);
+    };
+//    private static final Function<Point, Double, Double> FUNCTION = (v) -> v.x + v.y;
 
     @FXML
     private ImageView plot;
@@ -50,6 +58,8 @@ public class Controller implements Initializable {
     private TextField yl;
     @FXML
     private TextField yr;
+    @FXML
+    private TextField eps;
 
     private double x0Value;
     private double xlValue;
@@ -57,6 +67,7 @@ public class Controller implements Initializable {
     private double y0Value;
     private double ylValue;
     private double yrValue;
+    private double epsValue;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -66,15 +77,30 @@ public class Controller implements Initializable {
         y0.textProperty().addListener((observable, oldValue, newValue) -> changeValues());
         yl.textProperty().addListener((observable, oldValue, newValue) -> changeValues());
         yr.textProperty().addListener((observable, oldValue, newValue) -> changeValues());
+        eps.textProperty().addListener((observable, oldValue, newValue) -> changeValues());
         run.setOnAction(event -> runMethod());
         changeValues();
     }
 
     private void runMethod() {
-        //TODO run method
-        buildFunctionGradient(plot, new Point(xlValue, ylValue), new Point(xrValue, yrValue), null);
+        Point left = new Point(xlValue, ylValue);
+        Point right = new Point(xrValue, yrValue);
+        Point start = new Point(x0Value, y0Value);
+        GradientDescent method = getMethod(left, right, start, epsValue);
+        Point min = method.findMinimum();
+        result.setText(String.format("(%.3f, %.3f)", min.x, min.y));
+        buildFunctionGradient(plot, left, right, method.getPoints());
     }
 
+    private GradientDescent getMethod(Point left, Point right, Point start, double eps) {
+        switch (methodSelector.getSelectionModel().getSelectedIndex()) {
+            case 0:
+                return new SimpleGradientDescent(FUNCTION, GRADIENT, left, right, start, eps);
+            case 1:
+                return new FastGradientDescent(FUNCTION, GRADIENT, left, right, start, eps);
+        }
+        return null;
+    }
 
     private void buildFunctionGradient(ImageView plot, Point l, Point r, List<Point> v) {
         int prefWidth = 600;
@@ -102,9 +128,9 @@ public class Controller implements Initializable {
             for (int yi = 0; yi < prefHeight; yi++) {
                 if (xi < width && yi < height) {
                     double mul = (pixels[yi][xi] - min) / length;
-                    pw.setColor(xi, height - 1 - yi, Color.rgb((int) (255 * mul), (int) (255 * (1 - mul)), (int) (255 * (1 - mul))));
+                    pw.setColor(xi, Math.max(0, height - 1 - yi), Color.rgb((int) (255 * mul), (int) (255 * (1 - mul)), (int) (255 * (1 - mul))));
                 } else {
-                    pw.setColor(xi, height - 1 - yi, Color.WHITE);
+                    pw.setColor(xi, Math.max(0, height - 1 - yi), Color.WHITE);
                 }
             }
         }
@@ -128,6 +154,7 @@ public class Controller implements Initializable {
             y0Value = Double.parseDouble(y0.getText());
             ylValue = Double.parseDouble(yl.getText());
             yrValue = Double.parseDouble(yr.getText());
+            epsValue = Double.parseDouble(eps.getText());
         } catch (Exception ignored) {
         }
     }

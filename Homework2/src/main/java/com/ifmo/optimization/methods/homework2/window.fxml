@@ -84,6 +84,8 @@
                 <Insets left="20.0" right="20.0" />
               </HBox.margin>
             </Button>
+            <Label font="$x1" text="ɛ = " />
+            <TextField id="x0" fx:id="eps" alignment="CENTER" prefWidth="70.0" text="0.0001" />
           </children>
         </HBox>
       </children>
