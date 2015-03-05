@@ -14,6 +14,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.net.URL;
@@ -206,6 +207,7 @@ public class Controller implements Initializable {
         double sy = (startY - ylValue) / yStep;
         Text text = new Text(sx, height - sy, textValue);
         text.setFill(color);
+        text.setFont(Font.font("Verdana", 7));
         linePlot.getChildren().add(text);
     }
 
