@@ -11,13 +11,11 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.Function;
@@ -26,6 +24,11 @@ import java.util.function.Function;
  * Created by Whiplash on 01.03.2015.
  */
 public class Controller implements Initializable {
+
+    private static final int PREF_WIDTH = 600;
+    private static final int PREF_HEIGHT = 600;
+
+    private static final int CONTOUR_LEVELS = 25;
 
     private static final Function<Point, Double> FUNCTION = (v) -> Math.pow(v.x, 4) + Math.pow(v.y, 4) - 5 * (v.x * v.y - Math.pow(v.x * v.y, 2));
     private static final Function<Point, Point> GRADIENT = p -> {
@@ -69,6 +72,13 @@ public class Controller implements Initializable {
     private double yrValue;
     private double epsValue;
 
+    private double xStep;
+    private double yStep;
+    private int height;
+    private int width;
+
+    private Render render = (startX, startY, endX, endY, contourLevel) -> drawLine(startX, startY, endX, endY);
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         x0.textProperty().addListener((observable, oldValue, newValue) -> changeValues());
@@ -83,13 +93,29 @@ public class Controller implements Initializable {
     }
 
     private void runMethod() {
-        Point left = new Point(xlValue, ylValue);
-        Point right = new Point(xrValue, yrValue);
+        width = PREF_WIDTH;
+        height = PREF_HEIGHT;
+
+        double realWidth = xrValue - xlValue;
+        double realHeight = yrValue - ylValue;
+
+        if (realWidth < realHeight) {
+            width = (int) (PREF_WIDTH * realWidth / realHeight);
+        } else {
+            height = (int) (PREF_HEIGHT * realHeight / realWidth);
+        }
+        xStep = realWidth / width;
+        yStep = realHeight / height;
+
+        Point rightTop = new Point(xrValue, yrValue);
+        Point leftBottom = new Point(xlValue, ylValue);
         Point start = new Point(x0Value, y0Value);
-        GradientDescent method = getMethod(left, right, start, epsValue);
+        GradientDescent method = getMethod(leftBottom, rightTop, start, epsValue);
         Point min = method.findMinimum();
         result.setText(String.format("(%.3f, %.3f)", min.x, min.y));
-        buildFunctionGradient(plot, left, right, method.getPoints());
+
+        drawFunctionContourMap();
+        drawMethodSteps(method.getPoints());
     }
 
     private GradientDescent getMethod(Point left, Point right, Point start, double eps) {
@@ -102,48 +128,50 @@ public class Controller implements Initializable {
         return null;
     }
 
-    private void buildFunctionGradient(ImageView plot, Point l, Point r, List<Point> v) {
-        int prefWidth = 600;
-        int prefHeight = 600;
-        int width = (int) (prefWidth * (r.x - l.x < r.y - l.y ? (r.x - l.x) / (r.y - l.y) : 1));
-        int height = (int) (prefHeight * (r.x - l.x > r.y - l.y ? (r.y - l.y) / (r.x - l.x) : 1));
-        double xStep = (r.x - l.x) / width;
-        double yStep = (r.y - l.y) / height;
+    private void drawMethodSteps(List<Point> path) {
+        for (int i = 0; i < path.size() - 1; i++) {
+            drawLine(path.get(i), path.get(i + 1));
+        }
+    }
+
+    private void drawFunctionContourMap() {
+        double[] x = new double[width];
+        double[] y = new double[height];
+        Arrays.setAll(x, i -> xlValue + i * xStep);
+        Arrays.setAll(y, i -> ylValue + i * yStep);
+
         double[][] pixels = new double[height][width];
         double max = Double.MIN_VALUE;
         double min = Double.MAX_VALUE;
-        for (int xi = 0; xi < prefWidth; xi++) {
-            for (int yi = 0; yi < prefHeight; yi++) {
-                if (xi < width && yi < height) {
-                    pixels[yi][xi] = FUNCTION.apply(new Point(l.x + xi * xStep, l.y + yi * yStep));
-                    max = Math.max(pixels[yi][xi], max);
-                    min = Math.min(pixels[yi][xi], min);
-                }
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                pixels[i][j] = FUNCTION.apply(new Point(x[i], y[j]));
+                max = Math.max(pixels[i][j], max);
+                min = Math.min(pixels[i][j], min);
             }
         }
-        double length = max - min;
-        WritableImage img = new WritableImage(prefWidth, prefHeight);
-        PixelWriter pw = img.getPixelWriter();
-        for (int xi = 0; xi < prefWidth; xi++) {
-            for (int yi = 0; yi < prefHeight; yi++) {
-                if (xi < width && yi < height) {
-                    double mul = (pixels[yi][xi] - min) / length;
-                    pw.setColor(xi, Math.max(0, height - 1 - yi), Color.rgb((int) (255 * mul), (int) (255 * (1 - mul)), (int) (255 * (1 - mul))));
-                } else {
-                    pw.setColor(xi, Math.max(0, height - 1 - yi), Color.WHITE);
-                }
-            }
-        }
-        plot.setImage(img);
+
+        double[] z = new double[CONTOUR_LEVELS];
+        double zStep = (max - min) / CONTOUR_LEVELS;
+        double finalMin = min;
+        Arrays.setAll(z, i -> finalMin * 1.05 + i * zStep);
+
         linePlot.getChildren().clear();
-        for (int i = 0; i < v.size() - 1; i++) {
-            double sx = (v.get(i).x - l.x) / xStep;
-            double sy = (v.get(i).y - l.y) / yStep;
-            double ex = (v.get(i + 1).x - l.x) / xStep;
-            double ey = (v.get(i + 1).y - l.y) / yStep;
-            Line line = new Line(sx, height - sy, ex, height - ey);
-            linePlot.getChildren().add(line);
-        }
+        Conrec conrec = new Conrec(render);
+        conrec.contour(pixels, 0, width - 1, 0, height - 1, x, y, z.length, z);
+    }
+
+    private void drawLine(Point start, Point end) {
+        drawLine(start.x, start.y, end.x, end.y);
+    }
+
+    private void drawLine(double startX, double startY, double endX, double endY) {
+        double sx = (startX - xlValue) / xStep;
+        double sy = (startY - ylValue) / yStep;
+        double ex = (endX - xlValue) / xStep;
+        double ey = (endY - ylValue) / yStep;
+        Line line = new Line(sx, height - sy, ex, height - ey);
+        linePlot.getChildren().add(line);
     }
 
     private void changeValues() {
@@ -158,5 +186,4 @@ public class Controller implements Initializable {
         } catch (Exception ignored) {
         }
     }
-
 }
