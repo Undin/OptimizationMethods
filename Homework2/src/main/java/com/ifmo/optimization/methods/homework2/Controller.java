@@ -29,8 +29,8 @@ import java.util.function.Function;
  */
 public class Controller implements Initializable {
 
-    private static final int PREF_WIDTH = 600;
-    private static final int PREF_HEIGHT = 600;
+    private static final int PREF_WIDTH = 550;
+    private static final int PREF_HEIGHT = 550;
 
     private static final int CONTOUR_LEVELS = 25;
 

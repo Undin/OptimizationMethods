@@ -13,19 +13,14 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<GridPane alignment="TOP_LEFT" hgap="10.0" maxHeight="734.0" maxWidth="600.0" minHeight="734.0" minWidth="600.0" prefHeight="734.0" prefWidth="600.0" vgap="10.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.ifmo.optimization.methods.homework2.Controller">
+<GridPane alignment="TOP_LEFT" hgap="10.0" maxHeight="634.0" maxWidth="550.0" minHeight="634.0" minWidth="550.0" prefHeight="634.0" prefWidth="550.0" vgap="10.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.ifmo.optimization.methods.homework2.Controller">
   <children>
-    <ImageView fx:id="plot" fitHeight="600.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="0" GridPane.rowIndex="0">
+    <Pane fx:id="linePlot" maxHeight="550.0" maxWidth="550.0" minHeight="550.0" minWidth="550.0" prefHeight="550.0" prefWidth="550.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
       <GridPane.margin>
-        <Insets top="-100.0" fx:id="x3" />
-      </GridPane.margin>
-    </ImageView>
-    <Pane fx:id="linePlot" maxHeight="600.0" maxWidth="600.0" minHeight="600.0" minWidth="600.0" prefHeight="600.0" prefWidth="600.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
-      <GridPane.margin>
-        <Insets top="-134.0" />
+        <Insets top="-184.0" />
       </GridPane.margin>
     </Pane>
-    <VBox maxHeight="134.0" maxWidth="600.0" minHeight="134.0" minWidth="600.0" prefHeight="134.0" prefWidth="600.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+    <VBox maxHeight="134.0" maxWidth="550.0" minHeight="134.0" minWidth="550.0" prefHeight="134.0" prefWidth="550.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
       <children>
         <HBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
           <children>
@@ -108,7 +103,7 @@
         </HBox>
       </children>
       <GridPane.margin>
-        <Insets top="600.0" />
+        <Insets top="500.0" />
       </GridPane.margin>
     </VBox>
   </children>
