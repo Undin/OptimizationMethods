@@ -15,7 +15,7 @@ public class Window extends Application {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setResizable(false);
-        stage.setTitle("f(x, y) = x^4 + y^4 - 5 * (x * y - 2 * x^2 * y^2)");
+        stage.setTitle("f(x, y) = x^4 + y^4 - 5 * (x * y - x^2 * y^2)");
         stage.show();
     }
 
