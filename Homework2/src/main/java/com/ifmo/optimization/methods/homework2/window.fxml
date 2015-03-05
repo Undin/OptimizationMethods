@@ -13,15 +13,19 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<GridPane alignment="TOP_LEFT" hgap="10.0" maxHeight="700.0" maxWidth="600.0" minHeight="700.0" minWidth="600.0" prefHeight="700.0" prefWidth="600.0" vgap="10.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.ifmo.optimization.methods.homework2.Controller">
+<GridPane alignment="TOP_LEFT" hgap="10.0" maxHeight="734.0" maxWidth="600.0" minHeight="734.0" minWidth="600.0" prefHeight="734.0" prefWidth="600.0" vgap="10.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.ifmo.optimization.methods.homework2.Controller">
   <children>
     <ImageView fx:id="plot" fitHeight="600.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="0" GridPane.rowIndex="0">
       <GridPane.margin>
         <Insets top="-100.0" fx:id="x3" />
       </GridPane.margin>
     </ImageView>
-    <Pane fx:id="linePlot" maxHeight="600.0" maxWidth="600.0" minHeight="600.0" minWidth="600.0" prefHeight="600.0" prefWidth="600.0" GridPane.columnIndex="0" GridPane.margin="$x3" GridPane.rowIndex="0" />
-    <VBox maxHeight="100.0" maxWidth="600.0" minHeight="100.0" minWidth="600.0" prefHeight="100.0" prefWidth="600.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+    <Pane fx:id="linePlot" maxHeight="600.0" maxWidth="600.0" minHeight="600.0" minWidth="600.0" prefHeight="600.0" prefWidth="600.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+      <GridPane.margin>
+        <Insets top="-134.0" />
+      </GridPane.margin>
+    </Pane>
+    <VBox maxHeight="134.0" maxWidth="600.0" minHeight="134.0" minWidth="600.0" prefHeight="134.0" prefWidth="600.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
       <children>
         <HBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
           <children>
@@ -61,16 +65,6 @@
         </HBox>
         <HBox alignment="CENTER" maxHeight="-1.0" minHeight="-1.0" prefHeight="200.0" prefWidth="100.0">
           <children>
-            <Label font="$x1" text="(x, y) =">
-              <HBox.margin>
-                <Insets right="5.0" />
-              </HBox.margin>
-            </Label>
-            <Label fx:id="result" font="$x1" text="(?, ?)">
-              <HBox.margin>
-                <Insets right="20.0" />
-              </HBox.margin>
-            </Label>
             <ChoiceBox fx:id="methodSelector" value="Constant step">
               <items>
                 <FXCollections fx:factory="observableArrayList">
@@ -86,6 +80,30 @@
             </Button>
             <Label font="$x1" text="ɛ = " />
             <TextField id="x0" fx:id="eps" alignment="CENTER" prefWidth="70.0" text="0.0001" />
+          </children>
+        </HBox>
+        <HBox alignment="CENTER" maxHeight="-1.0" minHeight="-1.0" prefHeight="200.0" prefWidth="100.0">
+          <children>
+            <Label fx:id="result" font="$x1" text="(?, ?)">
+              <HBox.margin>
+                <Insets right="20.0" />
+              </HBox.margin>
+            </Label>
+            <Label text="Function computition: ">
+              <font>
+                <Font size="14.0" fx:id="x4" />
+              </font>
+              <HBox.margin>
+                <Insets right="5.0" />
+              </HBox.margin>
+            </Label>
+            <Label id="result" fx:id="fComp" font="$x1" text="?">
+              <HBox.margin>
+                <Insets right="20.0" />
+              </HBox.margin>
+            </Label>
+            <Label font="$x4" text="Gradient computition: " />
+            <Label id="result" fx:id="gComp" font="$x1" text="?" />
           </children>
         </HBox>
       </children>

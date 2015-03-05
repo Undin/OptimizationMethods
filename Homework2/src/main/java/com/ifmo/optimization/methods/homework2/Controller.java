@@ -12,12 +12,16 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -48,6 +52,10 @@ public class Controller implements Initializable {
     private Button run;
     @FXML
     private Label result;
+    @FXML
+    private Label fComp;
+    @FXML
+    private Label gComp;
 
     @FXML
     private TextField x0;
@@ -77,7 +85,21 @@ public class Controller implements Initializable {
     private int height;
     private int width;
 
-    private Render render = (startX, startY, endX, endY, contourLevel) -> drawLine(startX, startY, endX, endY);
+    private Set<Double> levelStorage = new HashSet<>();
+
+    private Render render = (startX, startY, endX, endY, contourLevel) -> {
+        drawLine(startX, startY, endX, endY, Color.GRAY, 1);
+        if (!levelStorage.contains(contourLevel) && isCorrectHeight(startY, endY)) {
+            drawText(startX, startY, Color.BLACK, String.format("%.2f", contourLevel));
+            levelStorage.add(contourLevel);
+        }
+    };
+
+    private boolean isCorrectHeight(double sY, double eY) {
+        double up = (ylValue + yrValue) * 0.55;
+        double down = (ylValue + yrValue) * 0.45;
+        return (up >= sY && sY >= down) || (up >= eY && eY >= down);
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -112,8 +134,12 @@ public class Controller implements Initializable {
         Point start = new Point(x0Value, y0Value);
         GradientDescent method = getMethod(leftBottom, rightTop, start, epsValue);
         Point min = method.findMinimum();
-        result.setText(String.format("(%.3f, %.3f)", min.x, min.y));
+        result.setText(String.format("f(%.3f, %.3f) = %.3f", min.x, min.y, FUNCTION.apply(min)));
+        fComp.setText("" + method.getFunctionComputations());
+        gComp.setText("" + method.getGradientComputations());
 
+        levelStorage.clear();
+        linePlot.getChildren().clear();
         drawFunctionContourMap();
         drawMethodSteps(method.getPoints());
     }
@@ -130,7 +156,7 @@ public class Controller implements Initializable {
 
     private void drawMethodSteps(List<Point> path) {
         for (int i = 0; i < path.size() - 1; i++) {
-            drawLine(path.get(i), path.get(i + 1));
+            drawLine(path.get(i), path.get(i + 1), Color.ORANGERED, 2);
         }
     }
 
@@ -156,22 +182,31 @@ public class Controller implements Initializable {
         double finalMin = min;
         Arrays.setAll(z, i -> finalMin * 1.05 + i * zStep);
 
-        linePlot.getChildren().clear();
         Conrec conrec = new Conrec(render);
         conrec.contour(pixels, 0, width - 1, 0, height - 1, x, y, z.length, z);
     }
 
-    private void drawLine(Point start, Point end) {
-        drawLine(start.x, start.y, end.x, end.y);
+    private void drawLine(Point start, Point end, Color color, double width) {
+        drawLine(start.x, start.y, end.x, end.y, color, width);
     }
 
-    private void drawLine(double startX, double startY, double endX, double endY) {
+    private void drawLine(double startX, double startY, double endX, double endY, Color color, double width) {
         double sx = (startX - xlValue) / xStep;
         double sy = (startY - ylValue) / yStep;
         double ex = (endX - xlValue) / xStep;
         double ey = (endY - ylValue) / yStep;
         Line line = new Line(sx, height - sy, ex, height - ey);
+        line.setStroke(color);
+        line.setStrokeWidth(width);
         linePlot.getChildren().add(line);
+    }
+
+    private void drawText(double startX, double startY, Color color, String textValue) {
+        double sx = (startX - xlValue) / xStep;
+        double sy = (startY - ylValue) / yStep;
+        Text text = new Text(sx, height - sy, textValue);
+        text.setFill(color);
+        linePlot.getChildren().add(text);
     }
 
     private void changeValues() {

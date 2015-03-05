@@ -1,6 +1,12 @@
 package com.ifmo.optimization.methods.homework1;
 
-import com.ifmo.optimization.methods.onedimensional.*;
+import com.ifmo.optimization.methods.onedimensional.BrokenLineMethod;
+import com.ifmo.optimization.methods.onedimensional.Dichotomy;
+import com.ifmo.optimization.methods.onedimensional.FibonacciMethod;
+import com.ifmo.optimization.methods.onedimensional.GoldenSectionMethod;
+import com.ifmo.optimization.methods.onedimensional.Method;
+import com.ifmo.optimization.methods.onedimensional.SequentialMethod;
+import com.ifmo.optimization.methods.onedimensional.UniformSearchMethod;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -111,7 +117,7 @@ public class Controller implements Initializable {
     private void updateValues(Method method, double resultValue, List<TableRow> rows) {
         iter.setText("" + method.getIterations());
         numbComp.setText("" + method.getFunctionComputations());
-        result.setText("" + resultValue);
+        result.setText(String.format("f(%.3f) = %.3f", resultValue, FUNCTION.apply(resultValue)));
         if (rows != null) {
             table.setItems(FXCollections.observableArrayList(rows));
         }
