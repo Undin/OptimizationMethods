@@ -167,7 +167,7 @@ public class Controller implements Initializable {
         Arrays.setAll(x, i -> xlValue + i * xStep);
         Arrays.setAll(y, i -> ylValue + i * yStep);
 
-        double[][] pixels = new double[height][width];
+        double[][] pixels = new double[width][height];
         double max = Double.MIN_VALUE;
         double min = Double.MAX_VALUE;
         for (int i = 0; i < width; i++) {
