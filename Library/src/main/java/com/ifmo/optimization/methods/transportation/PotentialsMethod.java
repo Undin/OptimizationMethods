@@ -1,6 +1,7 @@
 package com.ifmo.optimization.methods.transportation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -29,6 +30,7 @@ public class PotentialsMethod extends TransportMethod {
             }
             curIter++;
             correctSolution();
+            printStep();
             Double[] u = new Double[provider.length];
             Double[] v = new Double[consumer.length];
             calculatePotentials(u, v);
@@ -42,7 +44,21 @@ public class PotentialsMethod extends TransportMethod {
                 return find();
             }
         } catch (Exception e) {
+            System.out.println("Can't solve system of equations");
             return find();
+        }
+    }
+
+    private void printStep() {
+        double costValue = 0;
+        for (int y = 0; y < solution.length; y++) {
+            for (int x = 0; x < solution[0].length; x++) {
+                costValue += solution[y][x] * cost[y][x];
+            }
+        }
+        System.out.format("\nIteration %d with cost %f\n", curIter, costValue);
+        for (double[] row : solution) {
+            System.out.println(Arrays.toString(row));
         }
     }
 
